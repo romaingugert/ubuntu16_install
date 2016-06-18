@@ -1,0 +1,7 @@
+#!/bin/sh
+
+#Installation utilitaires
+explain "Installation des utilitaires"
+tell sudo apt-get remove vim-tiny
+tell sudo apt-get install curl git-core vim
+

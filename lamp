@@ -1,0 +1,12 @@
+#!/bin/sh
+
+#Installation LAMP
+explain "Installation d'Apache"
+    tell sudo apt-get install apache2 apache2-utils
+
+explain "Installation de MySQL"
+    tell sudo apt-get install mysql-server mysql-client
+#sudo mysql_secure_installation
+#sudo mysql_install_db
+explain "Installation de PHP-7 fpm"
+    tell sudo apt-get install php7.0-fpm php7.0-mysql php7.0-common php7.0-gd php7.0-mysql php7.0-imap php7.0-json php7.0-cli php7.0-curl php7.0-intl php7.0-tidy php7.0-xmlrpc php7.0-xsl php-pear php-auth php7.0-mcrypt mcrypt

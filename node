@@ -1,0 +1,6 @@
+#!/bin/sh
+
+#Installation de node js
+explain "Installation de nodejs"
+tell sudo apt-get install nodejs npm
+

@@ -1,0 +1,19 @@
+#!/bin/sh
+
+#Installation ruby sass compass
+
+explain "Installation de RVM"
+  tell sudo apt-get install libgdbm-dev libncurses5-dev automake libtool bison libffi-dev
+  tell gpg2 --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
+  tell curl -sSL https://get.rvm.io | bash -s stable
+  tell source  $HOME/.rvm/scripts/rvm
+
+explain "Installation de ruby"
+  tell rvm install 2.3.1
+  tell rvm use 2.3.1 --default
+
+explain "Installation de bundler"
+  tell gem install bundler
+
+explain "Installation de Sass"
+  tell gem install sass

@@ -6,7 +6,33 @@ explain "Installation d'Apache"
 
 explain "Installation de MySQL"
     tell sudo apt-get install mysql-server mysql-client
-#sudo mysql_secure_installation
-#sudo mysql_install_db
+
 explain "Installation de PHP-7 fpm"
-    tell sudo apt-get install php7.0-fpm php7.0-mysql php7.0-common php7.0-gd php7.0-mysql php7.0-imap php7.0-json php7.0-cli php7.0-curl php7.0-intl php7.0-tidy php7.0-xmlrpc php7.0-xsl php-pear php-auth php7.0-mcrypt mcrypt
+    tell sudo apt-get install php7.0-fpm php7.0-mysql php7.0-common php7.0-gd php7.0-mysql php7.0-imap php7.0-json php7.0-cli php7.0-curl php7.0-intl php7.0-tidy php7.0-xmlrpc php7.0-xsl php7.0-mbstring php-pear php-auth php7.0-mcrypt mcrypt
+
+#Configuration apache
+explain "Configuration php fpm"
+tell sudo a2enmod proxy_fcgi setenvif
+tell sudo a2enconf php7.0-fpm
+sudo sed -i -n -- 's|display_errors\ =\ Off|display_errors\ =\ On|g' /etc/php/7.0/fpm/php.ini
+explain "Configuration du virtual host"
+apache_conf_site=/etc/apache2/sites-available/$USER.conf
+if [ -e "$apache_conf_site" ] ; then
+    explain "$apache_conf_site already exists"
+else
+    tell sudo cp $BASEDIR/config/apache_virtual_host $apache_conf_site
+    tell sudo sed -i -- 's/$USER/'$USER'/g' $apache_conf_site
+    tell sudo sed -i -- 's|$ROOTDIRECTORY|'$HOME'/www|g' $apache_conf_site
+    tell mkdir -p $HOME/www
+    tell chmod 755 $HOME/www
+    tell sudo a2ensite $USER
+
+    if ! grep -q "$USER.localhost" /etc/hosts ; then
+        echo "127.0.0.1	$USER.localhost" | sudo tee -a /etc/hosts
+    else
+        explain "$USER.localhost already define in hosts file"
+    fi
+fi
+explain "Restart php and Apache"
+tell sudo service php7.0-fpm restart
+tell sudo service apache2 restart

@@ -19,10 +19,13 @@ tell sudo apt-get dist-upgrade
 . $BASEDIR/node
 
 #Sass et ruby
-#. $BASEDIR/sass
+. $BASEDIR/sass
 
 #ZSH
 . $BASEDIR/zsh
+
+#Chrome
+. $BASEDIR/chrome
 
 #Spotify
 . $BASEDIR/spotify

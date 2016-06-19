@@ -33,6 +33,9 @@ tell sudo apt-get dist-upgrade
 #Spotify
 . $BASEDIR/spotify
 
+#Firewall
+. $BASEDIR/firewall
+
 
 
 

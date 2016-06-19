@@ -1,0 +1,7 @@
+#!/bin/sh
+
+#Firewall
+explain "Firewall"
+    tell sudo ufw default deny
+    tell sudo ufw default allow outgoing
+    tell sudo ufw enable

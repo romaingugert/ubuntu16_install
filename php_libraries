@@ -43,7 +43,7 @@ else
 fi
 
 
-#Xbebug
+#XDebug
 explain "Installation de Xdebug"
 if find  /usr/lib/php/ -name "xdebug.so$" ; then
     explain "XDebug déjà installé"
@@ -73,4 +73,27 @@ else
     tell cd ..
     tell rm -R xdebug-2.4.0 xdebug-2.4.0.tgz
     tell sudo service php-7.0-fpm restart
+fi
+
+#PHPMYADMIN
+explain "Installation de phpmyadmin"
+tell sudo apt-get install phpmyadmin
+
+explain "Configuration du virtual host"
+apache_conf_site=/etc/apache2/sites-available/phpmyadmin.conf
+if [ -e "$apache_conf_site" ] ; then
+    explain "$apache_conf_site already exists"
+else
+    tell sudo cp $BASEDIR/config/apache_virtual_host $apache_conf_site
+    tell sudo sed -i -- 's/$USER/phpmyadmin/g' $apache_conf_site
+    tell sudo sed -i -- 's|$ROOTDIRECTORY|/var/www/phpmyadmin|g' $apache_conf_site
+    tell sudo ln -s /usr/share/phpmyadmin/ /var/www/phpmyadmin
+    tell sudo a2ensite phpmyadmin
+
+    if ! grep -q "phpmyadmin.localhost" /etc/hosts ; then
+        echo "127.0.0.1	phpmyadmin.localhost" | sudo tee -a /etc/hosts
+    else
+        explain "phpmyadmin.localhost already define in hosts file"
+    fi
+    tell sudo service apache2 reload
 fi

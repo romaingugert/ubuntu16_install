@@ -1,0 +1,76 @@
+#!/bin/sh
+
+#Composer
+if [ -e "/usr/local/bin/composer" ] ; then
+    explain "Composer déjà installé"
+else
+    explain "Installation de composer"
+        php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+        php -r "if (hash_file('SHA384', 'composer-setup.php') === '070854512ef404f16bac87071a6db9fd9721da1684cd4589b1196c3faf71b9a2682e2311b36a5079825e155ac7ce150d') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+        tell sudo php composer-setup.php
+        php -r "unlink('composer-setup.php');"
+        tell sudo mv composer.phar /usr/local/bin/composer
+fi
+
+#PHPCS
+if [ -e "/usr/local/bin/phpcs" ] ; then
+    explain "PHPCS déjà installé"
+else
+    explain "Installation de phpcs"
+        tell sudo curl -OL https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar
+        tell sudo chmod +x phpcs.phar
+        tell sudo mv phpcs.phar /usr/local/bin/phpcs
+fi
+
+#PHPCBF
+if [ -e "/usr/local/bin/phpcbf" ] ; then
+    explain "PHPCS déjà installé"
+else
+    explain "Installation de phpbcf"
+        tell sudo curl -OL https://squizlabs.github.io/PHP_CodeSniffer/phpcbf.phar
+        tell sudo chmod +x phpcbf.phar
+        tell sudo mv phpcbf.phar /usr/local/bin/phpcbf
+fi
+
+#PHP Metrics
+if [ -e "/usr/local/bin/phpmetrics" ] ; then
+    explain "PHP Metrics déjà installé"
+else
+    explain "Installation de php metrics"
+        tell sudo wget https://github.com/phpmetrics/PhpMetrics/raw/master/build/phpmetrics.phar
+        tell sudo chmod +x phpmetrics.phar
+        tell sudo mv phpmetrics.phar /usr/local/bin/phpmetrics
+fi
+
+
+#Xbebug
+explain "Installation de Xdebug"
+if find  /usr/lib/php/ -name "xdebug.so$" ; then
+    explain "XDebug déjà installé"
+else
+    tell wget http://xdebug.org/files/xdebug-2.4.0.tgz
+    tell tar -xvzf xdebug-2.4.0.tgz
+    tell cd xdebug-2.4.0
+    if ! TMP=$(phpize | tr -d ' ' | grep -Po '(?<=ZendModuleApiNo:).*') ; then
+        error "Une erreure est survenue durant l'installation de Xdebug"
+    else
+        tell sh ./configure
+        tell make
+        tell sudo cp modules/xdebug.so "/usr/lib/php/$TMP"
+        # add debug to cli version
+        if ! grep -q "zend_extension=/usr/lib/php/20151012/xdebug.so" /etc/php/7.0/cli/php.ini ; then
+            echo "zend_extension=/usr/lib/php/20151012/xdebug.so" | sudo tee -a /etc/php/7.0/cli/php.ini
+        else
+            explain "zend_extension=/usr/lib/php/20151012/xdebug.so already define in php.ini file"
+        fi
+        #Add xedebug to fpm version
+        if ! grep -q "zend_extension=/usr/lib/php/20151012/xdebug.so" /etc/php/7.0/fpm/php.ini ; then
+            echo "zend_extension=/usr/lib/php/20151012/xdebug.so" | sudo tee -a /etc/php/7.0/fpm/php.ini
+        else
+            explain "zend_extension=/usr/lib/php/20151012/xdebug.so already define in php.ini file"
+        fi
+    fi
+    tell cd ..
+    tell rm -R xdebug-2.4.0 xdebug-2.4.0.tgz
+    tell sudo service php-7.0-fpm restart
+fi

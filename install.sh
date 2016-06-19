@@ -15,6 +15,9 @@ tell sudo apt-get dist-upgrade
 #LAMP
 . $BASEDIR/lamp
 
+# Php tools
+. $BASEDIR/php_libraries
+
 #Node
 . $BASEDIR/node
 
@@ -29,6 +32,7 @@ tell sudo apt-get dist-upgrade
 
 #Spotify
 . $BASEDIR/spotify
+
 
 
 

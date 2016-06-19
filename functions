@@ -30,5 +30,9 @@ explain() {
 }
 
 success() {
-  echo "${GREEN}${1}\033${NORMAL}"
+  echo "${GREEN}${1}${NORMAL}"
+}
+
+error() {
+  echo "${RED}${1}${NORMAL}"
 }

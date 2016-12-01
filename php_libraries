@@ -45,7 +45,7 @@ fi
 
 #XDebug
 explain "Installation de Xdebug"
-if find  /usr/lib/php/ -name "xdebug.so$" ; then
+if [[ -n $(find /usr/lib/php/ -name "xdebug.so") ]]; then
     explain "XDebug déjà installé"
 else
     tell wget http://xdebug.org/files/xdebug-2.4.0.tgz
@@ -72,7 +72,7 @@ else
     fi
     tell cd ..
     tell rm -R xdebug-2.4.0 xdebug-2.4.0.tgz
-    tell sudo service php-7.0-fpm restart
+    tell sudo service php7.0-fpm restart
 fi
 
 #PHPMYADMIN
